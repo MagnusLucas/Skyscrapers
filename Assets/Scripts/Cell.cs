@@ -1,13 +1,12 @@
+using TMPro;
 using UnityEngine;
 
 public class Cell : MonoBehaviour {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start() {
-        
+
+    [SerializeField] private TMP_InputField inputField;
+
+    public void SetNumber(int number) {
+        inputField.text = number.ToString();
     }
 
-    // Update is called once per frame
-    void Update() {
-        
-    }
 }
