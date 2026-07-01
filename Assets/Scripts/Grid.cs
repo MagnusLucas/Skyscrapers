@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 
 public class Grid {
@@ -16,7 +15,7 @@ public class Grid {
 
     public static void GenerateGrid(int gridSize) {
         while (true) {
-            if (TryGenerateGrid(gridSize)) return;
+            if (TryGenerateGrid(gridSize)) break;
         }
     }
 
@@ -54,12 +53,6 @@ public class Grid {
         return shuffled;
     }
 
-    private static string ListToString(List<int> possibleNumbers) {
-        string result = "";
-        foreach (int element in possibleNumbers) result += element + ", ";
-        return result;
-    }
-
     private static int FindAcceptableNumber(Vector2i position, List<int> possibleNumbers, Dictionary<Vector2i, int> setNumbers) {
         if (possibleNumbers.Count < 1) {
             throw new Exception("No possible number!");
@@ -87,6 +80,45 @@ public class Grid {
         Instance = this;
     }
 
+    public int GetHintValue(bool checkRow, bool defaultDirection, int rowOrColumnNumber) {
+        List<KeyValuePair<Vector2i, int>> relevantNumbers = new List<KeyValuePair<Vector2i, int>>();
+
+        foreach(KeyValuePair<Vector2i, int> pair in numberInCell) {
+            if (checkRow) {
+                if (pair.Key.y == rowOrColumnNumber) {
+                    relevantNumbers.Add(pair);
+                }
+            } else {
+                if (pair.Key.x == rowOrColumnNumber) {
+                    relevantNumbers.Add(pair);
+                }
+            }
+        }
+
+        int multiplier = 1;
+        if (!defaultDirection) multiplier = -1;
+
+
+        IEnumerable<KeyValuePair<Vector2i, int>> query;
+        if (checkRow) {
+            query = relevantNumbers.OrderBy((KeyValuePair<Vector2i, int> pair) => pair.Key.x * multiplier);
+        } else {
+            query = relevantNumbers.OrderBy((KeyValuePair<Vector2i, int> pair) => pair.Key.y * multiplier);
+        }
+
+        int hintValue = 0;
+        int maxNumberSeen = 0;
+
+        foreach (KeyValuePair<Vector2i, int> pair in query) {
+            if (pair.Value > maxNumberSeen) {
+                maxNumberSeen = pair.Value;
+                hintValue++;
+            }
+        }
+
+        return hintValue;
+    }
+
     public override string ToString() {
         string result = "\n";
 
@@ -109,4 +141,9 @@ public struct Vector2i {
         this.x = x;
         this.y = y;
     }
+
+    public override string ToString() {
+        return "(" + x + "," + y + ")";
+    }
+
 }

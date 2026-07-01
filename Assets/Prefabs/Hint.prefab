@@ -188,6 +188,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Hint
   arrowHookPoint: {fileID: 4227581772000848886}
+  textMeshProUGUI: {fileID: 7191623340578870017}
 --- !u!1 &6526898484536266191
 GameObject:
   m_ObjectHideFlags: 0
