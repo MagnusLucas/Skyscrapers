@@ -9,7 +9,7 @@ public class GridManager : MonoBehaviour {
     [SerializeField] private Cell cellPrefab;
     private GridLayoutGroup gridLayoutGroup;
 
-    private Dictionary<Vector2, Cell> cells;
+    private Dictionary<Vector2i, Cell> cells;
 
     private void Awake() {
         gridLayoutGroup = GetComponent<GridLayoutGroup>();
@@ -27,10 +27,10 @@ public class GridManager : MonoBehaviour {
     }
 
     private void GenerateChildren(Grid grid) {
-        cells = new Dictionary<Vector2, Cell>();
+        cells = new Dictionary<Vector2i, Cell>();
 
         gridLayoutGroup.constraintCount = grid.Size;
-        foreach (KeyValuePair<Vector2, int> pair in grid.numberInCell) {
+        foreach (KeyValuePair<Vector2i, int> pair in grid.numberInCell) {
             Cell cell = Instantiate(cellPrefab, transform);
             cells[pair.Key] = cell;
             cell.SetNumber(pair.Value);
