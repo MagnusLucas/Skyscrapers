@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class GridManager : MonoBehaviour {
 
     [SerializeField] private Cell cellPrefab;
+    [SerializeField] private Hint hintPrefab;
     private GridLayoutGroup gridLayoutGroup;
 
     private Dictionary<Vector2i, Cell> cells;
@@ -34,6 +35,11 @@ public class GridManager : MonoBehaviour {
             Cell cell = Instantiate(cellPrefab, transform);
             cells[pair.Key] = cell;
             cell.SetNumber(pair.Value);
+        }
+
+        for (int i = 0; i < grid.Size; i++) {
+            Hint hint = Instantiate(hintPrefab, transform);
+            hint.SetDirection(Hint.Direction.UP);
         }
     }
 
