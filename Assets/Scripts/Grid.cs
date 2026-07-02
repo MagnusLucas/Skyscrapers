@@ -80,8 +80,10 @@ public class Grid {
         Instance = this;
     }
 
-    public int GetHintValue(bool checkRow, bool defaultDirection, int rowOrColumnNumber) {
-        List<KeyValuePair<Vector2i, int>> relevantNumbers = new List<KeyValuePair<Vector2i, int>>();
+    public int GetHintValue(Direction direction, int rowOrColumnNumber) {
+
+        bool checkRow = direction == Direction.LEFT || direction == Direction.RIGHT;
+        bool defaultDirection = direction == Direction.RIGHT || direction == Direction.DOWN;
 
         int hintValue = 0;
         int maxNumberSeen = 0;
@@ -114,20 +116,5 @@ public class Grid {
         return result;
     }
 
-
-}
-
-public struct Vector2i {
-    public int x;
-    public int y;
-
-    public Vector2i(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    public override string ToString() {
-        return "(" + x + "," + y + ")";
-    }
 
 }

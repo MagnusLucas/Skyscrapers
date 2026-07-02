@@ -37,41 +37,47 @@ public class GridManager : MonoBehaviour {
 
         Instantiate(spacer, transform);
         for (int i = 0; i < grid.Size; i++) {
-            Hint hint = Instantiate(hintPrefab, transform);
-            hint.SetDirection(Hint.Direction.DOWN);
-            hint.SetValue(Grid.Instance.GetHintValue(false, true, i));
+            AddHint(Direction.DOWN, i);
         }
         Instantiate(spacer, transform);
+
 
         cells = new Dictionary<Vector2i, Cell>();
 
         for (int y = 0; y < Grid.Instance.Size; y++) {
-            Hint hint = Instantiate(hintPrefab, transform);
-            hint.SetDirection(Hint.Direction.RIGHT);
-            hint.SetValue(Grid.Instance.GetHintValue(true, true, y));
-
+            AddHint(Direction.RIGHT, y);
             for (int x = 0; x < Grid.Instance.Size; x++) {
-                Cell cell = Instantiate(cellPrefab, transform);
-                cells[new Vector2i(x, y)] = cell;
-                cell.SetNumber(Grid.Instance.NumberInCell[new Vector2i(x, y)]);
+                AddCell(new Vector2i(x, y));
             }
-
-            hint = Instantiate(hintPrefab, transform);
-            hint.SetDirection(Hint.Direction.LEFT);
-            hint.SetValue(Grid.Instance.GetHintValue(true, false, y));
+            AddHint(Direction.LEFT, y);
         }
 
         Instantiate(spacer, transform);
         for (int i = 0; i < grid.Size; i++) {
-            Hint hint = Instantiate(hintPrefab, transform);
-            hint.SetDirection(Hint.Direction.UP);
-            hint.SetValue(Grid.Instance.GetHintValue(false, false, i));
+            AddHint(Direction.UP, i);
         }
         Instantiate(spacer, transform);
     }
 
-    private void ShowSolution() {
+    private void AddCell(Vector2i position) {
+        Cell cell = Instantiate(cellPrefab, transform);
+        cells[position] = cell;
+        cell.SetNumber(Grid.Instance.NumberInCell[position]);
+    }
 
+    private void AddHint(Direction direction, int lineNumber) {
+        Hint hint = Instantiate(hintPrefab, transform);
+        hint.SetDirection(direction);
+        hint.SetValue(Grid.Instance.GetHintValue(direction, lineNumber));
+    }
+
+    private void ShowSolution() {
+        for (int i = 0; i < Grid.Instance.Size; i++) {
+            for (int j = 0; j < Grid.Instance.Size; j++) {
+                Vector2i position = new Vector2i(i, j);
+                cells[position].SetNumber(Grid.Instance.NumberInCell[position]);
+            }
+        }
     }
 
     private void HideSolution() {

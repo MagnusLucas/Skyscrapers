@@ -3,12 +3,6 @@ using UnityEngine;
 
 public class Hint : MonoBehaviour {
     
-    public enum Direction {
-        LEFT,
-        UP,
-        RIGHT,
-        DOWN
-    }
 
     [SerializeField] Transform arrowHookPoint;
     [SerializeField] TextMeshProUGUI textMeshProUGUI;
