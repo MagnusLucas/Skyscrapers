@@ -19,7 +19,7 @@ public class GridManager : MonoBehaviour {
         ClearChildren();
         Grid.GenerateGrid(5);
         GenerateChildren(Grid.Instance);
-        HideSolution();
+        //HideSolution();
     }
 
     private void ClearChildren() {
@@ -45,25 +45,20 @@ public class GridManager : MonoBehaviour {
 
         cells = new Dictionary<Vector2i, Cell>();
 
-        IOrderedEnumerable<KeyValuePair<Vector2i, int>> query = grid.numberInCell.OrderBy((KeyValuePair<Vector2i, int> pair) => pair.Key.y).ThenBy(pair => pair.Key.x);
+        for (int y = 0; y < Grid.Instance.Size; y++) {
+            Hint hint = Instantiate(hintPrefab, transform);
+            hint.SetDirection(Hint.Direction.RIGHT);
+            hint.SetValue(Grid.Instance.GetHintValue(true, true, y));
 
-        foreach (KeyValuePair<Vector2i, int> pair in query) {
-            if (pair.Key.x == 0) {
-                Hint hint = Instantiate(hintPrefab, transform);
-                hint.SetDirection(Hint.Direction.RIGHT);
-                hint.SetValue(Grid.Instance.GetHintValue(true, true, pair.Key.y));
+            for (int x = 0; x < Grid.Instance.Size; x++) {
+                Cell cell = Instantiate(cellPrefab, transform);
+                cells[new Vector2i(x, y)] = cell;
+                cell.SetNumber(Grid.Instance.NumberInCell[new Vector2i(x, y)]);
             }
 
-            Cell cell = Instantiate(cellPrefab, transform);
-            cells[pair.Key] = cell;
-            cell.SetNumber(pair.Value);
-
-
-            if (pair.Key.x == grid.Size - 1) {
-                Hint hint = Instantiate(hintPrefab, transform);
-                hint.SetDirection(Hint.Direction.LEFT);
-                hint.SetValue(Grid.Instance.GetHintValue(true, false, pair.Key.y));
-            }
+            hint = Instantiate(hintPrefab, transform);
+            hint.SetDirection(Hint.Direction.LEFT);
+            hint.SetValue(Grid.Instance.GetHintValue(true, false, y));
         }
 
         Instantiate(spacer, transform);

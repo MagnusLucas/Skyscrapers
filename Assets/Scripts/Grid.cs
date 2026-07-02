@@ -11,7 +11,7 @@ public class Grid {
 
 
     public int Size { get; private set; }
-    public Dictionary<Vector2i, int> numberInCell { get; private set; }
+    public Dictionary<Vector2i, int> NumberInCell { get; private set; }
 
     public static void GenerateGrid(int gridSize) {
         while (true) {
@@ -27,8 +27,8 @@ public class Grid {
             List<int> availableNumbers = AvailableNumbers(gridSize);
             for (int j = 0; j < gridSize; j++) {
                 try {
-                    int pickedNumber = FindAcceptableNumber(new Vector2i(i, j), new List<int>(availableNumbers), newGrid.numberInCell);
-                    newGrid.numberInCell[new Vector2i(i, j)] = pickedNumber;
+                    int pickedNumber = FindAcceptableNumber(new Vector2i(i, j), new List<int>(availableNumbers), newGrid.NumberInCell);
+                    newGrid.NumberInCell[new Vector2i(i, j)] = pickedNumber;
                     availableNumbers.Remove(pickedNumber);
                 }catch(Exception e) {
                     Debug.LogException(e);
@@ -76,44 +76,26 @@ public class Grid {
     }
 
     private Grid() {
-        numberInCell = new Dictionary<Vector2i, int>();
+        NumberInCell = new Dictionary<Vector2i, int>();
         Instance = this;
     }
 
     public int GetHintValue(bool checkRow, bool defaultDirection, int rowOrColumnNumber) {
         List<KeyValuePair<Vector2i, int>> relevantNumbers = new List<KeyValuePair<Vector2i, int>>();
 
-        foreach(KeyValuePair<Vector2i, int> pair in numberInCell) {
-            if (checkRow) {
-                if (pair.Key.y == rowOrColumnNumber) {
-                    relevantNumbers.Add(pair);
-                }
-            } else {
-                if (pair.Key.x == rowOrColumnNumber) {
-                    relevantNumbers.Add(pair);
-                }
-            }
-        }
-
-        int multiplier = 1;
-        if (!defaultDirection) multiplier = -1;
-
-
-        IEnumerable<KeyValuePair<Vector2i, int>> query;
-        if (checkRow) {
-            query = relevantNumbers.OrderBy((KeyValuePair<Vector2i, int> pair) => pair.Key.x * multiplier);
-        } else {
-            query = relevantNumbers.OrderBy((KeyValuePair<Vector2i, int> pair) => pair.Key.y * multiplier);
-        }
-
         int hintValue = 0;
         int maxNumberSeen = 0;
 
-        foreach (KeyValuePair<Vector2i, int> pair in query) {
-            if (pair.Value > maxNumberSeen) {
-                maxNumberSeen = pair.Value;
+        for (int i = 0; i < Size; i++) {
+            int placeInRowOrColumn = defaultDirection ? i : Size - i - 1;
+            Vector2i cellToCheck = checkRow ? new Vector2i(placeInRowOrColumn, rowOrColumnNumber) : new Vector2i(rowOrColumnNumber, placeInRowOrColumn);
+            int cellValue = NumberInCell[cellToCheck];
+
+            if (cellValue > maxNumberSeen) {
+                maxNumberSeen = cellValue;
                 hintValue++;
             }
+
         }
 
         return hintValue;
@@ -122,9 +104,11 @@ public class Grid {
     public override string ToString() {
         string result = "\n";
 
-        foreach (KeyValuePair<Vector2i, int> pair in numberInCell) {
-            result += pair.Value + " ";
-            if (pair.Key.x == Size - 1) result += "\n";
+        for (int i = 0; i < Size; i++) {
+            for (int j = 0; j < Size; j++) {
+                result += NumberInCell[new Vector2i(i, j)] + " ";
+            }
+            result += "\n";
         }
 
         return result;
